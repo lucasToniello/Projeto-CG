@@ -48,10 +48,18 @@ function novaCurva(pontosControle){
 
 	var points = curve.getPoints(50);
 	var geometry = new THREE.BufferGeometry().setFromPoints(points);
-	var material = new THREE.LineBasicMaterial({ color : 0xffffff });
+	var material = new THREE.LineBasicMaterial({color : 0x000000});
 	var curveObject = new THREE.Line(geometry, material);
 
 	return curveObject
+}
+
+function novoPlano(pts){
+	var geometry = new THREE.PlaneGeometry(pts[0], pts[1], pts[2]);
+	var material = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide});
+	var plane = new THREE.Mesh(geometry, material);
+
+	return plane;
 }
 
 function init() {
@@ -61,6 +69,8 @@ function init() {
 	camera2 = novaCamera([40, 40, 10], [0, 0, 5])
 	curva = novaCurva([[0, 0, 0], [-30, 30, 0], [30, 30, 0], [0, 0, 0]])
 	curva2 = novaCurva([[-7, 0, 0], [-35, 35, 0], [35, 35, 0], [7, 0, 0]])
+	curva3 = novaCurva([[-7, 0, 0], [-7, -14, 0], [7, -14, 0], [7, 0, 0]])
+	plano = novoPlano([100, 100, 50]);
 
 	container = document.createElement('div');
 	renderer = new THREE.WebGLRenderer();
@@ -73,15 +83,16 @@ function init() {
 	scene.add(camera2);
 	scene.add(curva);  curva.rotation.x = THREE.Math.degToRad(90);
 	scene.add(curva2);  curva2.rotation.x = THREE.Math.degToRad(90);
+	scene.add(curva3);  curva3.rotation.x = THREE.Math.degToRad(90);
+	scene.add(plano); plano.rotation.x = THREE.Math.degToRad(90); plano.position.y -= 1
 	scene.add(new THREE.AmbientLight(0xffffff, 2));
 
 	new THREE.MTLLoader().setPath('../res/car/').load('car.mtl', function(materials){
-		materials.preload();
 		new THREE.OBJLoader().setMaterials(materials).setPath('../res/car/')
 		.load('car.obj', function(object){
 			car.add(object);
 			scene.add(car);
-			car.position.z = -4;
+			car.position.z = -5;
 		});
 	});
 
@@ -103,11 +114,10 @@ function render () {
 	}
 }
 
-var camera1, camera2, curva, scene, container, renderer;
+var camera1, camera2, curva, curva2, scene, container, renderer;
 
 var car = new THREE.Object3D();
 var road = new THREE.Object3D();
-var mesh = new THREE.Mesh()
 
 init();
 animate();	
