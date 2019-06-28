@@ -1,3 +1,4 @@
+// Função de controle do carro
 function controler(e){
 	key = String.fromCharCode(e.which);
 
@@ -29,6 +30,7 @@ function controler(e){
 	console.log(car.rotation.y % Math.PI)
 }
 
+// Função para criar nova câmera
 function novaCamera(pi, pv){
 	var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
 	camera.position.set(pi[0], pi[1], pi[2]);
@@ -36,6 +38,7 @@ function novaCamera(pi, pv){
 	return camera
 }
 
+// Função para criar nova curva de bezier
 function novaCurva(pontosControle){
 	p0 = pontosControle[0]; p1 = pontosControle[1]; p2 = pontosControle[2]; p3 = pontosControle[3]
 
@@ -54,6 +57,7 @@ function novaCurva(pontosControle){
 	return curveObject
 }
 
+// Função para criar novo plano
 function novoPlano(pts){
 	var geometry = new THREE.PlaneGeometry(pts[0], pts[1], pts[2]);
 	var material = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide});
@@ -62,8 +66,9 @@ function novoPlano(pts){
 	return plane;
 }
 
-function init() {
+function init(){
 
+	// Inicialização das variáveis
 	scene = new THREE.Scene();
 	camera1 = novaCamera([-40, 40, 10], [0, 0, 0])
 	camera2 = novaCamera([10, 10, 10], [0, 0, 5])
@@ -72,6 +77,7 @@ function init() {
 	curva3 = novaCurva([[-7, 0, 0], [-7, -14, 0], [7, -14, 0], [7, 0, 0]])
 	plano = novoPlano([100, 100, 50]);
 
+	// Inicialização do ambiente
 	container = document.createElement('div');
 	renderer = new THREE.WebGLRenderer();
 	document.body.appendChild(container);
@@ -87,6 +93,7 @@ function init() {
 	scene.add(plano); plano.rotation.x = THREE.Math.degToRad(90); plano.position.y -= 1
 	scene.add(new THREE.AmbientLight(0xffffff, 2));
 
+	// Função para carregar o objeto, após o carregamento, aplicamos a iluminação Phong ao objeto
 	new THREE.MTLLoader().setPath('../res/car/').load('car.mtl', function(materials){
 		new THREE.OBJLoader().setMaterials(materials).setPath('../res/car/')
 		.load('car.obj', function(object) {
@@ -112,12 +119,12 @@ function init() {
 var cameraSelector = true
 
 //Atualiza a imagem da tela
-function animate() {
+function animate(){
 	requestAnimationFrame(animate);
 	render();
 }
 
-function render () {
+function render(){
 	if (cameraSelector){
 		renderer.render(scene, camera1);
 	} else {
@@ -125,7 +132,7 @@ function render () {
 	}
 }
 
-var camera1, camera2, curva, curva2, scene, container, renderer;
+var scene, camera1, camera2, curva, curva2, curva3, plano, container, renderer;
 
 var car = new THREE.Object3D();
 var road = new THREE.Object3D();
