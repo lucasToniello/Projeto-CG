@@ -48,7 +48,7 @@ function novaCurva(pontosControle){
 
 	var points = curve.getPoints(50);
 	var geometry = new THREE.BufferGeometry().setFromPoints(points);
-	var material = new THREE.LineBasicMaterial({color : 0x000000});
+	var material = new THREE.LineBasicMaterial({ color : 0x000000 });
 	var curveObject = new THREE.Line(geometry, material);
 
 	return curveObject
@@ -66,7 +66,7 @@ function init() {
 
 	scene = new THREE.Scene();
 	camera1 = novaCamera([-40, 40, 10], [0, 0, 0])
-	camera2 = novaCamera([40, 40, 10], [0, 0, 5])
+	camera2 = novaCamera([10, 10, 10], [0, 0, 5])
 	curva = novaCurva([[0, 0, 0], [-30, 30, 0], [30, 30, 0], [0, 0, 0]])
 	curva2 = novaCurva([[-7, 0, 0], [-35, 35, 0], [35, 35, 0], [7, 0, 0]])
 	curva3 = novaCurva([[-7, 0, 0], [-7, -14, 0], [7, -14, 0], [7, 0, 0]])
@@ -89,12 +89,23 @@ function init() {
 
 	new THREE.MTLLoader().setPath('../res/car/').load('car.mtl', function(materials){
 		new THREE.OBJLoader().setMaterials(materials).setPath('../res/car/')
-		.load('car.obj', function(object){
-			car.add(object);
+		.load('car.obj', function(object) {
+		    object.traverse(function (child){
+		        if (child instanceof THREE.Mesh) {
+		            child.material = new THREE.MeshPhongMaterial({
+		                color:     0xff000f, 
+		                specular:  0xff000f,
+		                shininess: 25,
+		                side:      THREE.DoubleSide
+		            });
+		        }
+   			});
+
+   			car.add(object);
 			scene.add(car);
 			car.position.z = -5;
 		});
-	});
+	})
 
 }
 
