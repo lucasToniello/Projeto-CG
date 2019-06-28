@@ -1,4 +1,4 @@
-// Função de controle do carro
+// Função de controle do carro e da câmera
 function controler(e){
 	key = String.fromCharCode(e.which);
 
@@ -71,7 +71,7 @@ function init(){
 	// Inicialização das variáveis
 	scene = new THREE.Scene();
 	camera1 = novaCamera([-40, 40, 10], [0, 0, 0])
-	camera2 = novaCamera([10, 10, 10], [0, 0, 5])
+	camera2 = novaCamera([-40, 40, 10], [0, 0, 5])
 	curva = novaCurva([[0, 0, 0], [-30, 30, 0], [30, 30, 0], [0, 0, 0]])
 	curva2 = novaCurva([[-7, 0, 0], [-35, 35, 0], [35, 35, 0], [7, 0, 0]])
 	curva3 = novaCurva([[-7, 0, 0], [-7, -14, 0], [7, -14, 0], [7, 0, 0]])
