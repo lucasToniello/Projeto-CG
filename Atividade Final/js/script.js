@@ -3,11 +3,9 @@ function controler(e){
 
 	if (key == "W"){
 		car.movimentoFrente()
-		// camera1.movimentoFrente()
 
 	} else if (key == "S"){
 		car.movimentoRe()
-		// camera1.movimentoRe()
 
 	} else if (key == "A"){
 		car.rotaciona(3)
@@ -26,15 +24,14 @@ function controler(e){
 function init(){
 
 	// Inicialização das variáveis
-	curvas = new THREE.Group();  addCurvas(curvas);
+	pista = new Pista()
 	camera2 = new Camera([-40, 40, 10], [0, 0, 5]);
-	curvaInicio = novaCurva([[-7, 0, 0], [-7, -14, 0], [7, -14, 0], [7, 0, 0]]);	
+	// curvaInicio = novaCurva([[-7, 0, 0], [-7, -14, 0], [7, -14, 0], [7, 0, 0]]);	
 	plano = novoPlano([100, 100, 50]);
 	obstaculo1 = novoObstaculo();  obstaculo1.position.x = 7;  obstaculo1.position.z = 16;
 	obstaculo2 = novoObstaculo();  obstaculo2.position.x = -7;  obstaculo2.position.z = 16;
 
 	scene.add(obstaculo1); scene.add(obstaculo2)
-	
 
 	// Inicialização do ambiente
 	container = document.createElement('div');
@@ -44,7 +41,8 @@ function init(){
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.addEventListener('keydown', controler);
 
-	scene.add(curvas); scene.add(curvaInicio); scene.add(plano);
+	pista.adicionaTracado();
+	scene.add(plano);
 	scene.add(new THREE.AmbientLight(0xffffff, 2));
 
 	// Função para carregar o objeto, após o carregamento, aplicamos a iluminação Phong ao objeto
