@@ -26,12 +26,7 @@ function init(){
 	// Inicialização das variáveis
 	pista = new Pista()
 	camera2 = new Camera([-40, 40, 10], [0, 0, 5]);
-	// curvaInicio = novaCurva([[-7, 0, 0], [-7, -14, 0], [7, -14, 0], [7, 0, 0]]);	
-	plano = novoPlano([100, 100, 50]);
-	obstaculo1 = novoObstaculo();  obstaculo1.position.x = 7;  obstaculo1.position.z = 16;
-	obstaculo2 = novoObstaculo();  obstaculo2.position.x = -7;  obstaculo2.position.z = 16;
-
-	scene.add(obstaculo1); scene.add(obstaculo2)
+	plano = novoPlano([500, 500, 500]);
 
 	// Inicialização do ambiente
 	container = document.createElement('div');
@@ -41,7 +36,11 @@ function init(){
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.addEventListener('keydown', controler);
 
-	pista.adicionaTracado();
+	p1 = pista.novaCurva([7, 0, 0], [80, 10, 0], [40, 50, 0], [100, 45, 0]); scene.add(p1);
+	p2 = pista.novaCurva([100, 45, 0], [140, 50, 0], [140, 90, 0], [100, 120, 0]); scene.add(p2);
+
+	obs = new Obstaculo(1, 1, 0, 10);
+	
 	scene.add(plano);
 	scene.add(new THREE.AmbientLight(0xffffff, 2));
 
@@ -66,7 +65,7 @@ function init(){
 
 }
 
-var cameraSelector = true
+var cameraSelector = false;
 
 //Atualiza a imagem da tela
 function animate(){
@@ -80,11 +79,12 @@ function render(){
 	if (cameraSelector){
 		renderer.render(scene, car.getCamera());
 	} else {
-		renderer.render(scene, camera2.object);
+		renderer.render(scene, car.getCameraPerspectiva());
 	}
 
 	//Função que controla os obstáculos da pista
-	// moveObstaculos(obstaculos)
+	// car.velocidade -= 0.5;
+	obs.move(0.1);
 }
 
 var car;
