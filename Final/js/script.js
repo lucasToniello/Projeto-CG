@@ -1,17 +1,19 @@
+var key;
+
 function controler(e){
 	key = String.fromCharCode(e.which);
 
 	if (key == "W"){
-		car.movimentoFrente()
+		car.acelera()
 
 	} else if (key == "S"){
-		car.movimentoRe()
+		car.desacelera();
 
 	} else if (key == "A"){
-		car.rotaciona(3)
+		car.rotaciona(4);
 
 	} else if (key == "D"){
-		car.rotaciona(-3)
+		car.rotaciona(-4);
 		
 	} else if (key == "1"){
 		cameraSelector = true;
@@ -24,7 +26,7 @@ function controler(e){
 function init(){
 
 	// Inicialização das variáveis
-	pista = new Pista()
+	pista = new Pista();
 	camera2 = new Camera([-40, 40, 10], [0, 0, 5]);
 	plano = novoPlano([500, 500, 500]);
 
@@ -36,10 +38,40 @@ function init(){
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.addEventListener('keydown', controler);
 
-	p1 = pista.novaCurva([7, 0, 0], [80, 10, 0], [40, 50, 0], [100, 45, 0]); scene.add(p1);
-	p2 = pista.novaCurva([100, 45, 0], [140, 50, 0], [140, 90, 0], [100, 120, 0]); scene.add(p2);
+	r0 = new Reta(7, 0, 0, 1);
+	r1 = new Reta(80, 10, -1, 1);
+	r2 = new Reta(40, 50, -1, 1);
+	r3 = new Reta(100, 45, 0, 1);
+
+	pista.adicionaTracado(r0, r1, r2, r3);
+
+	r0.setParametros(100, 45, 0, 1);
+	r1.setParametros(140, 50, -1, 1);
+	r2.setParametros(140, 90, -1, -1);
+	r3.setParametros(100, 120, -1, -1);
+	pista.adicionaTracado(r0, r1, r2, r3);
+
+	r0.setParametros(100, 120, -1, -1);
+	r1.setParametros(-20, 120, 0, -1);
+	r2.setParametros(-20, 80, 0, -1);
+	r3.setParametros(-70, 80, 0, -1);
+	pista.adicionaTracado(r0, r1, r2, r3);
+
+	r0.setParametros(-70, 80, 0, -1);
+	r1.setParametros(-150, 70, 1, -1);
+	r2.setParametros(-150, 40, 1, 0);
+	r3.setParametros(-130, 10, 1, 0);
+	pista.adicionaTracado(r0, r1, r2, r3);
+
+	r0.setParametros(-130, 10, 1, 0);
+	r1.setParametros(-100, -20, 0, 1.5);
+	r2.setParametros(-50, -20, 0, 1.5);
+	r3.setParametros(-7, 0, 0, 1);
+	pista.adicionaTracado(r0, r1, r2, r3);
 
 	obs = new Obstaculo(1, 1, 0, 10);
+
+	p1 = penis([7, 0, 0], [80, 10, -1], [40, 50, -1], [100, 45, 0]);
 	
 	scene.add(plano);
 	scene.add(new THREE.AmbientLight(0xffffff, 2));
@@ -83,12 +115,17 @@ function render(){
 	}
 
 	//Função que controla os obstáculos da pista
-	// car.velocidade -= 0.5;
-	obs.move(0.1);
+
+	if (key){
+		key = null;
+	} else {
+		car.idle();
+	}
+
+	car.movimento();
 }
 
-var car;
-var curva, curva2, curvaInicio, plano, container, renderer;
+var car, plano, container, renderer;
 
 init();
-animate();	
+animate();

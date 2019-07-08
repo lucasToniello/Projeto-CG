@@ -10,9 +10,22 @@ function novoPlano(pts){
 	return plano;
 }
 
-r0 = new Reta(0, 0, -1, Math.tan(0));
-r1 = new Reta(-30, 30, -1, Math.tan(Math.PI/4));
-r2 = new Reta(30, 30, 1, Math.tan(Math.PI/4));
-r3 = new Reta(0, 0, 1, Math.tan(0));
+function penis(p0, p1, p2, p3){
 
-pista.adicionaTracado(r0, r1, r2, r3);
+	var curve = new THREE.CubicBezierCurve(
+		new THREE.Vector3(p0[0], p0[1], p0[2]),
+		new THREE.Vector3(p1[0], p1[1], p1[2]),
+		new THREE.Vector3(p2[0], p2[1], p2[2]),
+		new THREE.Vector3(p3[0], p3[1], p3[2])
+	)
+
+	var points = curve.getPoints(2000);
+	var geometry = new THREE.BufferGeometry().setFromPoints(points);
+	var material = new THREE.LineBasicMaterial({color : 0x000000});
+	var curva = new THREE.Line(geometry, material);
+	curva.rotation.x = THREE.Math.degToRad(90);
+
+	console.log(points);
+
+	return curva;
+}

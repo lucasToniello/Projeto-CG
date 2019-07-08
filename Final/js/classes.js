@@ -30,22 +30,38 @@ class Car {
 		scene.add(this.cameraPerspectiva);
 	}
 
-	movimentoFrente(){
-		this.object.position.z += 1.5*Math.cos(this.object.rotation.y);
-		this.object.position.x += 1.5*Math.sin(this.object.rotation.y);
-		this.camera.object.position.z += 1.5*Math.cos(this.object.rotation.y);
-		this.camera.object.position.x += 1.5*Math.sin(this.object.rotation.y);
-		this.cameraPerspectiva.object.position.z += 1.5*Math.cos(this.object.rotation.y);
-		this.cameraPerspectiva.object.position.x += 1.5*Math.sin(this.object.rotation.y);
+	idle(){
+
+		if (this.velocidade > 1){
+			this.velocidade -= 0.5;
+		} else if (this.velocidade < -1){
+			this.velocidade += 0.5;
+		} else {
+			this.velocidade = 0;
+		}
 	}
 
-	movimentoRe(){
-		this.object.position.z -= Math.cos(this.object.rotation.y);
-		this.object.position.x -= Math.sin(this.object.rotation.y);
-		this.camera.object.position.z -= Math.cos(this.object.rotation.y);
-		this.camera.object.position.x -= Math.sin(this.object.rotation.y);
-		this.cameraPerspectiva.object.position.z -= Math.cos(this.object.rotation.y);
-		this.cameraPerspectiva.object.position.x -= Math.sin(this.object.rotation.y);
+	acelera(){
+		if (this.velocidade < 150){
+			this.velocidade += 2;
+		}
+	}
+
+	desacelera(){
+		if (this.velocidade > -100){
+			this.velocidade -= 1;
+		}
+	}
+
+	movimento(){
+		if (this.velocidade != 0){
+			this.object.position.z += (this.velocidade/150)*Math.cos(this.object.rotation.y);
+			this.object.position.x += (this.velocidade/150)*Math.sin(this.object.rotation.y);
+			this.camera.object.position.z += (this.velocidade/150)*Math.cos(this.object.rotation.y);
+			this.camera.object.position.x += (this.velocidade/150)*Math.sin(this.object.rotation.y);
+			this.cameraPerspectiva.object.position.z += (this.velocidade/150)*Math.cos(this.object.rotation.y);
+			this.cameraPerspectiva.object.position.x += (this.velocidade/150)*Math.sin(this.object.rotation.y);
+		}
 	}
 
 	rotaciona(angulo){
@@ -66,10 +82,14 @@ class Reta {
 
 	x0 = 0;
 	y0 = 0;
-	mx = 1; // apenas 0 ou 1
+	mx = 1;
 	my = 1;
 
 	constructor(x0, y0, mx, my){
+		this.setParametros(x0, y0, mx, my);
+	}
+
+	setParametros(x0, y0, mx, my){
 		this.x0 = x0;
 		this.y0 = y0;
 		this.mx = mx; 
@@ -78,7 +98,7 @@ class Reta {
 
 	getPonto(dx){
 		var x = this.x0 + (this.mx*dx);
-		var y = this.y0 + (this.my*dx)
+		var y = this.y0 + (this.my*dx);
 
 		return [x, y, 0];
 	}
@@ -142,19 +162,20 @@ class Pista {
 		var curva = new THREE.Line(geometry, material);
 		curva.rotation.x = THREE.Math.degToRad(90);
 
-		return curva
+		return curva;
 	}
 
-	adicionaTracado(r0, r1, r2, r3){	
+	adicionaTracado(r0, r1, r2, r3){
 		var p0, p1, p2, p3;
 
-		for (var i = 0; i < 7; i += 0.02){
-			p0 = r0.getPonto(i)
-			p1 = r1.getPonto(i)
-			p2 = r2.getPonto(i)
-			p3 = r3.getPonto(i)
-			this.curvas.add(this.novaCurva(p0, p1, p2, p3))
+		for (var i = 0; i < 15; i += 0.05){
+			p0 = r0.getPonto(i);
+			p1 = r1.getPonto(i);
+			p2 = r2.getPonto(i);
+			p3 = r3.getPonto(i);
+			this.curvas.add(this.novaCurva(p0, p1, p2, p3));
 		}
+		
 	}
 
 	atualizaObstaculos(){
