@@ -25,7 +25,7 @@ function penis(p0, p1, p2, p3){
 	var curva = new THREE.Line(geometry, material);
 	curva.rotation.x = THREE.Math.degToRad(90);
 
-	console.log(points);
+	// console.log(points);
 
 	return curva;
 }
