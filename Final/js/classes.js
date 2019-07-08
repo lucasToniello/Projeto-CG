@@ -22,12 +22,10 @@ class Car {
 
 	constructor(car){
 		this.object.add(car);
-		this.object.position.z = -5;
 		this.camera = new Camera([0, 2, -5], [0, 2, 5]);
 		this.cameraPerspectiva = new Camera([-40, 40, 10], [0, 0, 0]);
 		scene.add(this.object);  
-		scene.add(this.camera);
-		scene.add(this.cameraPerspectiva);
+		// this.origem();
 	}
 
 	idle(){
@@ -59,13 +57,19 @@ class Car {
 		this.camera.object.position.x += (this.velocidade/150)*Math.sin(this.object.rotation.y);
 		this.cameraPerspectiva.object.position.z += (this.velocidade/150)*Math.cos(this.object.rotation.y);
 		this.cameraPerspectiva.object.position.x += (this.velocidade/150)*Math.sin(this.object.rotation.y);
-		
-		// console.log(this.object.position);
 	}
 
 	rotaciona(angulo){
 		this.object.rotation.y += THREE.Math.degToRad(angulo);
 		this.camera.object.rotation.y -= THREE.Math.degToRad(angulo);
+	}
+
+	origem(){
+		this.object.position.x = 0;
+		this.object.position.y = 0;
+		this.object.position.z = 7.5;
+		this.camera.object.position.set(0, 2, -5);
+		this.cameraPerspectiva.object.position.set(-40, 40, 10);
 	}
 
 	getCamera(){
@@ -151,6 +155,7 @@ class Obstaculo {
 class Pista {
 
 	curvas = new THREE.Group();
+	colisoesPista = {};
 	// Obstaculos aqui
 
 	constructor(){
@@ -177,8 +182,48 @@ class Pista {
 		return curva;
 	}
 
+	valida(v, y){
+		for (var i = 0; i < v.length; i++){
+			if (y < v[i] + 5 && y > v[i] - 5){
+				return false;
+			}
+		}
+
+			return true;
+	}
+
+	adicionaColisoes(dict, p0, p1, p2, p3){
+
+		var curve = new THREE.CubicBezierCurve(
+			new THREE.Vector3(p0[0], p0[1], p0[2]),
+			new THREE.Vector3(p1[0], p1[1], p1[2]),
+			new THREE.Vector3(p2[0], p2[1], p2[2]),
+			new THREE.Vector3(p3[0], p3[1], p3[2])
+		)
+
+		var point, x, y;
+
+		for (var i = 0; i < 1000; i++){
+			point = curve.getPoint(i/1000);
+			x = Math.round(point.x);
+			y = point.y;
+			
+			if (x in dict){
+				if (this.valida(dict[x], y)){
+					this.colisoesPista[x].push(point.y);
+				}
+
+			} else {
+				dict[x] = [point.y];
+			}
+		}
+	}
+
 	adicionaTracado(r0, r1, r2, r3){
 		var p0, p1, p2, p3;
+
+		this.adicionaColisoes(this.colisoesPista, r0.getPonto(0), r1.getPonto(0),
+											 r2.getPonto(0), r3.getPonto(0));
 
 		for (var i = 0; i < 15; i += 0.05){
 			p0 = r0.getPonto(i);
@@ -187,6 +232,9 @@ class Pista {
 			p3 = r3.getPonto(i);
 			this.curvas.add(this.novaCurva(p0, p1, p2, p3));
 		}
+
+		this.adicionaColisoes(this.colisoesPista, r0.getPonto(i), r1.getPonto(i),
+											 r2.getPonto(i), r3.getPonto(i));
 		
 	}
 

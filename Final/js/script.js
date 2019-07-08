@@ -23,6 +23,27 @@ function controler(e){
 	}
 }
 
+function colisaoPista(car, dict){
+	var posicoes = dict[Math.round(car.x)];
+
+	if (car.x < -7 || car.x > 7){
+		for (var i = 1; i < posicoes.length; i += 2){
+			if (posicoes[i] > posicoes[i-1]){
+				if (car.z < posicoes[i] && car.z > posicoes[i-1]){
+					return false;
+				}
+
+			} else {
+				if (car.z < posicoes[i-1] && car.z > posicoes[i]){
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+}
+
 function colisao(car, obj){
 	if (car.x > obj[0][0] && car.x < obj[0][1]){
 		if (car.z > obj[1][0] && car.z < obj[1][1]){
@@ -63,14 +84,12 @@ function init(){
 	r2.setParametros(-150, 40, 0, 1, 0, 0);   r3.setParametros(-130, 10, 0, 1, 0, 0);
 	pista.adicionaTracado(r0, r1, r2, r3);
 
-	r0.setParametros(-130, 10, 0, 1, 0, 0);   r1.setParametros(-100, -20, 0, 0, 1.5, 0);
-	r2.setParametros(-50, -20, 0, 0, 1.5, 0); r3.setParametros(-7, 0, 0, 0, 1, 0);
+	r0.setParametros(-130, 10, 0, 1, 0, 0);   r1.setParametros(-100, -20, 0, 0, 1, 0);
+	r2.setParametros(-50, -20, 0, 0, 1, 0); r3.setParametros(-7, 0, 0, 0, 1, 0);
 	pista.adicionaTracado(r0, r1, r2, r3);
 
 	obs = new Obstaculo(new Reta(55.90, 1, 24.37, -0.74, 0, 0.688), 15);
 	obs2 = new Obstaculo(new Reta(76, 1, 119.4, 0, 0, -0.877), 15);
-
-	p1 = penis([7, 0, 0], [80, 10, -1], [40, 50, -1], [100, 45, 0]);
 	
 	scene.add(plano);
 	scene.add(new THREE.AmbientLight(0xffffff, 2));
@@ -94,14 +113,14 @@ function init(){
 		});
 	})
 
-	new THREE.MTLLoader().setPath('../res/trafficlight/').load('trafficlight.mtl', function(materials){
-		materials.preload();
-		new THREE.OBJLoader().setMaterials(materials).setPath('../res/trafficlight/')
-		.load('trafficlight.obj', function(object){
-			semaforo.add(object);
-			scene.add(semaforo);
-		});
-	});
+	// new THREE.MTLLoader().setPath('../res/trafficlight/').load('trafficlight.mtl', function(materials){
+	// 	materials.preload();
+	// 	new THREE.OBJLoader().setMaterials(materials).setPath('../res/trafficlight/')
+	// 	.load('trafficlight.obj', function(object){
+	// 		semaforo.add(object);
+	// 		scene.add(semaforo);
+	// 	});
+	// });
 
 }
 
@@ -130,12 +149,17 @@ function render(){
 		car.idle();
 	}
 
-	car.movimento();
-	obs.move(0.1);
+	if(colisaoPista(car.object.position, pista.colisoesPista)){
+		car.velocidade = 0;
+		car.origem();
+	}
 
 	if (colisao(car.object.position, obs.getColisao())){
-		console.log("Colidiu!");
+		car.velocidade = 0;
 	}
+
+	car.movimento();
+	obs.move(0.1);
 }
 
 var car, plano, container, renderer;

@@ -10,22 +10,19 @@ function novoPlano(pts){
 	return plano;
 }
 
-function penis(p0, p1, p2, p3){
+function valida(v, y){
+	for (var i = 0; i < v.length; i++){
+		if (y < v[i] + 5 && y > v[i] - 5){
+			return false;
+		}
+	}
 
-	var curve = new THREE.CubicBezierCurve(
-		new THREE.Vector3(p0[0], p0[1], p0[2]),
-		new THREE.Vector3(p1[0], p1[1], p1[2]),
-		new THREE.Vector3(p2[0], p2[1], p2[2]),
-		new THREE.Vector3(p3[0], p3[1], p3[2])
-	)
+	return true;
+}
 
-	var points = curve.getPoints(2000);
-	var geometry = new THREE.BufferGeometry().setFromPoints(points);
-	var material = new THREE.LineBasicMaterial({color : 0x000000});
-	var curva = new THREE.Line(geometry, material);
-	curva.rotation.x = THREE.Math.degToRad(90);
-
-	// console.log(points);
-
-	return curva;
+function limpaColisoes(dict){
+	// for (var key in dict){
+	//     console.log(key);
+	// }
+	console.log(dict);
 }
