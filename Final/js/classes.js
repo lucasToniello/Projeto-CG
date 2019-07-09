@@ -125,7 +125,13 @@ class Obstaculo {
 	constructor(reta, distMaxima){
 		var texture = new THREE.TextureLoader().load( '../res/textures/wood.jpg' );
 		var geometry = new THREE.BoxGeometry(3, 3, 3);
-		var material = new THREE.MeshBasicMaterial({map: texture});
+		var material = new THREE.MeshPhongMaterial({
+			color: 0xf5ef42,
+		    specular:  0xf5bc42,
+		    shininess: 15,
+		    map: texture
+		});
+
 		this.object = new THREE.Mesh(geometry, material);
 		this.reta = reta;
 		this.distMaxima = distMaxima;
@@ -159,7 +165,6 @@ class Pista {
 
 	curvas = new THREE.Group();
 	colisoesPista = {};
-	// Obstaculos aqui
 
 	constructor(){
 		this.curvaInicio = this.novaCurva([-7, 0, 0], [-7, -14, 0], [7, -14, 0], [7, 0, 0]);
@@ -226,7 +231,7 @@ class Pista {
 		var p0, p1, p2, p3;
 
 		this.adicionaColisoes(this.colisoesPista, r0.getPonto(0), r1.getPonto(0),
-											 r2.getPonto(0), r3.getPonto(0));
+		r2.getPonto(0), r3.getPonto(0));
 
 		for (var i = 0; i < 15; i += 0.05){
 			p0 = r0.getPonto(i);
@@ -237,11 +242,7 @@ class Pista {
 		}
 
 		this.adicionaColisoes(this.colisoesPista, r0.getPonto(i), r1.getPonto(i),
-											 r2.getPonto(i), r3.getPonto(i));
+		r2.getPonto(i), r3.getPonto(i));
 		
-	}
-
-	atualizaObstaculos(){
-
 	}
 }

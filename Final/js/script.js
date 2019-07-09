@@ -75,7 +75,7 @@ function init(){
 	plano = novoPlano([500, 500, 500]);
 	checkpoints = {
 		atual : 0,
-		points : [[95, 45, 60], [86, 105, 120], [-75, 65, 80], [-7, 0, 15]]
+		points : [[95, 45, 60], [86, 105, 120], [-75, 65, 80], [-20, -4, 7.5]]
 	}
 
 	// Inicialização do ambiente
@@ -108,6 +108,7 @@ function init(){
 
 	obs = new Obstaculo(new Reta(55.90, 1, 24.37, -0.74, 0, 0.688), 15);
 	obs2 = new Obstaculo(new Reta(76, 1, 119.4, 0, 0, -0.877), 15);
+	obs3 = new Obstaculo(new Reta(-126.5, 1, 29.50, -0.92, 0, -0.218), 15);
 	
 	scene.add(plano);
 	scene.add(new THREE.AmbientLight(0xffffff, 2));
@@ -118,6 +119,28 @@ function init(){
    			car = new Car(object)
 		});
 	})
+
+	var loader = new THREE.OBJLoader();
+	loader.load('../res/star.obj', function(object){
+		object.traverse(function (child){
+		    if (child instanceof THREE.Mesh) {
+		        child.material = new THREE.MeshPhongMaterial({
+		            color:     0xfff200, 
+		            specular:  0xff000f,
+		            shininess: 25,
+		            side:      THREE.DoubleSide,
+		        });
+		    }
+
+		    star.add(object);
+		    scene.add(star);
+		    star.position.x = -20; star.position.y = 7; star.position.z = 2;
+		    star.rotation.x = THREE.Math.degToRad(90);
+		    star.rotation.z = THREE.Math.degToRad(90);
+   		});
+	})
+
+
 }
 
 var cameraSelector = false;
@@ -167,14 +190,16 @@ function render(){
 			document.getElementById("status").innerHTML = "Tempo final: " + clock.getElapsedTime();
 		}
 
+		console.log(car.object.position);
 		car.movimento();
 		obs.move(0.1);
 		obs2.move(0.1);
+		obs3.move(0.1);
 	}
 }
 
 var car, plano, container, renderer;
-var semaforo = new THREE.Object3D();
+var star = new THREE.Object3D();
 
 init();
 animate();
