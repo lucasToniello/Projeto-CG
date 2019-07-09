@@ -9,20 +9,3 @@ function novoPlano(pts){
 
 	return plano;
 }
-
-function valida(v, y){
-	for (var i = 0; i < v.length; i++){
-		if (y < v[i] + 5 && y > v[i] - 5){
-			return false;
-		}
-	}
-
-	return true;
-}
-
-function limpaColisoes(dict){
-	// for (var key in dict){
-	//     console.log(key);
-	// }
-	console.log(dict);
-}

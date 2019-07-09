@@ -22,10 +22,12 @@ class Car {
 
 	constructor(car){
 		this.object.add(car);
-		this.camera = new Camera([0, 2, -5], [0, 2, 5]);
+		this.object.position.x = 0;
+		this.object.position.y = 0;
+		this.object.position.z = 7.5;
+		this.camera = new Camera([0, 2, 7.5], [0, 2, 15]);
 		this.cameraPerspectiva = new Camera([-40, 40, 10], [0, 0, 0]);
 		scene.add(this.object);  
-		// this.origem();
 	}
 
 	idle(){
@@ -68,7 +70,7 @@ class Car {
 		this.object.position.x = 0;
 		this.object.position.y = 0;
 		this.object.position.z = 7.5;
-		this.camera.object.position.set(0, 2, -5);
+		this.camera.object.position.set(0, 2, 7.5);
 		this.cameraPerspectiva.object.position.set(-40, 40, 10);
 	}
 
@@ -121,8 +123,9 @@ class Obstaculo {
 	distMaxima = 0;
 
 	constructor(reta, distMaxima){
+		var texture = new THREE.TextureLoader().load( '../res/textures/wood.jpg' );
 		var geometry = new THREE.BoxGeometry(3, 3, 3);
-		var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+		var material = new THREE.MeshBasicMaterial({map: texture});
 		this.object = new THREE.Mesh(geometry, material);
 		this.reta = reta;
 		this.distMaxima = distMaxima;

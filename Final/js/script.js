@@ -54,11 +54,29 @@ function colisao(car, obj){
 	return false;
 }
 
+function verificaCheckPoint(car, checkpoints){
+	if (Math.round(car.x) == checkpoints.points[checkpoints.atual][0]){
+		if (Math.round(car.z) > checkpoints.points[checkpoints.atual][1] &&
+			Math.round(car.z) < checkpoints.points[checkpoints.atual][2]){
+			console.log("pau");
+				return true;
+		}
+	}
+
+	return false;
+}
+
 function init(){
 
 	// Inicialização das variáveis
+	Jogo = true;
+	clock = new THREE.Clock();
 	pista = new Pista();
 	plano = novoPlano([500, 500, 500]);
+	checkpoints = {
+		atual : 0,
+		points : [[95, 45, 60], [86, 105, 120], [-75, 65, 80], [-7, 0, 15]]
+	}
 
 	// Inicialização do ambiente
 	container = document.createElement('div');
@@ -85,7 +103,7 @@ function init(){
 	pista.adicionaTracado(r0, r1, r2, r3);
 
 	r0.setParametros(-130, 10, 0, 1, 0, 0);   r1.setParametros(-100, -20, 0, 0, 1, 0);
-	r2.setParametros(-50, -20, 0, 0, 1, 0); r3.setParametros(-7, 0, 0, 0, 1, 0);
+	r2.setParametros(-50, -20, 0, 0, 1, 0);   r3.setParametros(-7, 0, 0, 0, 1, 0);
 	pista.adicionaTracado(r0, r1, r2, r3);
 
 	obs = new Obstaculo(new Reta(55.90, 1, 24.37, -0.74, 0, 0.688), 15);
@@ -94,34 +112,12 @@ function init(){
 	scene.add(plano);
 	scene.add(new THREE.AmbientLight(0xffffff, 2));
 
-	// Função para carregar o objeto, após o carregamento, aplicamos a iluminação Phong ao objeto
 	new THREE.MTLLoader().setPath('../res/car/').load('car.mtl', function(materials){
 		new THREE.OBJLoader().setMaterials(materials).setPath('../res/car/')
 		.load('car.obj', function(object) {
-		    object.traverse(function (child){
-		        if (child instanceof THREE.Mesh) {
-		            child.material = new THREE.MeshPhongMaterial({
-		                color:     0xff000f, 
-		                specular:  0xff000f,
-		                shininess: 25,
-		                side:      THREE.DoubleSide
-		            });
-		        }
-   			});
-
    			car = new Car(object)
 		});
 	})
-
-	// new THREE.MTLLoader().setPath('../res/trafficlight/').load('trafficlight.mtl', function(materials){
-	// 	materials.preload();
-	// 	new THREE.OBJLoader().setMaterials(materials).setPath('../res/trafficlight/')
-	// 	.load('trafficlight.obj', function(object){
-	// 		semaforo.add(object);
-	// 		scene.add(semaforo);
-	// 	});
-	// });
-
 }
 
 var cameraSelector = false;
@@ -141,25 +137,40 @@ function render(){
 		renderer.render(scene, car.getCameraPerspectiva());
 	}
 
-	//Função que controla os obstáculos da pista
+	if(Jogo){
+		if (key){
+			key = null;
+		} else {
+			car.idle();
+		}
 
-	if (key){
-		key = null;
-	} else {
-		car.idle();
+		document.getElementById("status").innerHTML = "Velocidade: " + Math.round(car.velocidade)
+		+ "  -  Tempo: " + Math.round(clock.getElapsedTime());
+
+		if(colisaoPista(car.object.position, pista.colisoesPista)){
+			car.velocidade = 0;
+			checkpoints.atual = 0;
+			car.origem();
+		}
+
+		if (colisao(car.object.position, obs.getColisao())){
+			car.velocidade = 0;
+		}
+
+		if (verificaCheckPoint(car.object.position, checkpoints)){
+			checkpoints.atual += 1;
+		}
+
+		if (checkpoints.atual > 3){
+			Jogo = false;
+			clock.stop();
+			document.getElementById("status").innerHTML = "Tempo final: " + clock.getElapsedTime();
+		}
+
+		car.movimento();
+		obs.move(0.1);
+		obs2.move(0.1);
 	}
-
-	if(colisaoPista(car.object.position, pista.colisoesPista)){
-		car.velocidade = 0;
-		car.origem();
-	}
-
-	if (colisao(car.object.position, obs.getColisao())){
-		car.velocidade = 0;
-	}
-
-	car.movimento();
-	obs.move(0.1);
 }
 
 var car, plano, container, renderer;
