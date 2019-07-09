@@ -23,6 +23,17 @@ function controler(e){
 	}
 }
 
+function novoPlano(pts){
+	var geometry = new THREE.PlaneGeometry(pts[0], pts[1], pts[2]);
+	var material = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide});
+	var plano = new THREE.Mesh(geometry, material);
+
+	plano.rotation.x = THREE.Math.degToRad(90);
+	plano.position.y -= 1
+
+	return plano;
+}
+
 function colisaoPista(car, dict){
 	var posicoes = dict[Math.round(car.x)];
 
@@ -58,7 +69,6 @@ function verificaCheckPoint(car, checkpoints){
 	if (Math.round(car.x) == checkpoints.points[checkpoints.atual][0]){
 		if (Math.round(car.z) > checkpoints.points[checkpoints.atual][1] &&
 			Math.round(car.z) < checkpoints.points[checkpoints.atual][2]){
-			console.log("pau");
 				return true;
 		}
 	}
