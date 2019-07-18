@@ -151,7 +151,7 @@ function render(){
 			if(pista.colisao(carBox[i])){
 				car.velocidade = 0;
 				checkpoints.atual = 0;
-				car.origem();
+				car.setPosicao(0, 0, 7.5);
 			}
 
 			if (pista.colisaoObstaculos(carBox[i])){

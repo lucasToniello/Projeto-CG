@@ -66,12 +66,12 @@ class Car {
 		this.camera.object.rotation.y -= THREE.Math.degToRad(angulo);
 	}
 
-	origem(){
-		this.object.position.x = 0;
-		this.object.position.y = 0;
-		this.object.position.z = 7.5;
-		this.camera.object.position.set(0, 2, 7.5);
-		this.cameraPerspectiva.object.position.set(-40, 40, 10);
+	setPosicao(x, y, z){
+		this.object.position.x = x;
+		this.object.position.y = y;
+		this.object.position.z = z;
+		this.camera.object.position.set(x, y + 2, z);
+		this.cameraPerspectiva.object.position.set(x - 40, y + 40, z + 2.5);
 	}
 
 	getCamera(){
@@ -94,12 +94,9 @@ class Car {
 
 class Reta {
 
-	x0 = 0;
-	y0 = 0;
-	z0 = 0;
-	mx = 1;
-	my = 1;
-	mz = 0;
+	x0 = 0;  mx = 1;
+	y0 = 0;  my = 1;
+	z0 = 0;  mz = 1;
 
 	constructor(x0, y0, z0, mx, my, mz){
 		this.setParametros(x0, y0, z0, mx, my, mz);
