@@ -91,7 +91,9 @@ function init(){
 	new THREE.MTLLoader().setPath('../res/car/').load('car.mtl', function(materials){
 		new THREE.OBJLoader().setMaterials(materials).setPath('../res/car/')
 		.load('car.obj', function(object){
-   			car = new Car(object)
+   			car = new Car(object);
+   			car.setRotacao(84);
+   			car.setPosicao(0, 0, 7.5);
 		});
 	})
 
@@ -132,7 +134,7 @@ function render(){
 	if (cameraSelector){
 		renderer.render(scene, car.getCamera());
 	} else {
-		renderer.render(scene, car.getCameraPerspectiva());
+		renderer.render(scene, car.cameraPerspectiva.object);
 	}
 
 	if(Jogo){
@@ -152,6 +154,7 @@ function render(){
 				car.velocidade = 0;
 				checkpoints.atual = 0;
 				car.setPosicao(0, 0, 7.5);
+				car.setRotacao(84);
 			}
 
 			if (pista.colisaoObstaculos(carBox[i])){

@@ -2,8 +2,6 @@ var scene = new THREE.Scene();
 
 class Camera {
 
-	object = null;
-
 	constructor(pi, pov){
 		this.object = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
 		this.object.position.set(pi[0], pi[1], pi[2]);
@@ -14,13 +12,8 @@ class Camera {
 
 class Car {
 
-	object = new THREE.Object3D();
-	camera = null;
-	cameraPerspectiva = null;
-	velocidade = 0;
-	aceleracao = 0;
-
 	constructor(car){
+		this.object = new THREE.Object3D();
 		this.object.add(car);
 		this.object.position.x = 0;
 		this.object.position.y = 0;
@@ -74,6 +67,11 @@ class Car {
 		this.cameraPerspectiva.object.position.set(x - 40, y + 40, z + 2.5);
 	}
 
+	setRotacao(angulo){
+		this.object.rotation.y = THREE.Math.degToRad(angulo);
+		this.camera.object.rotation.y = THREE.Math.degToRad(angulo);
+	}
+
 	getCamera(){
 		return this.camera.object;
 	}
@@ -93,10 +91,6 @@ class Car {
 }
 
 class Reta {
-
-	x0 = 0;  mx = 1;
-	y0 = 0;  my = 1;
-	z0 = 0;  mz = 1;
 
 	constructor(x0, y0, z0, mx, my, mz){
 		this.setParametros(x0, y0, z0, mx, my, mz);
@@ -122,12 +116,6 @@ class Reta {
 
 class Obstaculo {
 
-	object = null;
-	reta = null;
-	direcao = 1;
-	dist = 0;
-	distMaxima = 0;
-
 	constructor(reta, distMaxima){
 		var texture = new THREE.TextureLoader().load( '../res/textures/wood.jpg' );
 		var geometry = new THREE.BoxGeometry(3, 3, 3);
@@ -140,6 +128,8 @@ class Obstaculo {
 
 		this.object = new THREE.Mesh(geometry, material);
 		this.reta = reta;
+		this.direcao = 1;
+		this.dist = 0;
 		this.distMaxima = distMaxima;
 		scene.add(this.object);
 	}
@@ -179,12 +169,10 @@ class Obstaculo {
 
 class Pista {
 
-	curvas = new THREE.Group();
-	colisoes = {};
-	obstaculos = [];
-
 	constructor(){
-		this.curvaInicio = this.novaCurva([-7, 0, 0], [-7, -14, 0], [7, -14, 0], [7, 0, 0]);
+		this.curvas = new THREE.Group();
+		this.colisoes = {};
+		this.obstaculos = [];
 		this.obstaculos.push(new Obstaculo(new Reta(55.90, 1, 24.37, -0.74, 0, 0.688), 15))
 		this.obstaculos.push(new Obstaculo(new Reta(76, 1, 119.4, 0, 0, -0.877), 15))
 		this.obstaculos.push(new Obstaculo(new Reta(-126.5, 1, 29.50, -0.92, 0, -0.218), 15))
